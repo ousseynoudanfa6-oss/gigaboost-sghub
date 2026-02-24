@@ -1,60 +1,27 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState } from 'react';
 
-interface User {
-  email: string;
-  id: string;
-  createdAt: string;
-}
+const AuthContext = createContext(null);
 
-interface AuthContextType {
-  user: User | null;
-  login: (email: string, password: string) => boolean;
-  register: (email: string, password: string) => boolean;
-  logout: () => void;
-}
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
 
-const AuthContext = createContext<AuthContextType | null>(null);
+    const loginWithPhone = (phoneNumber, countryCode) => {
+        // Add your phone-based authentication logic here.
+        // You can use the phoneNumber and countryCode for the authentication process.
+        setUser({ phoneNumber, countryCode });
+        // perform further authentication actions... 
+    };
 
-export const useAuth = () => {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
-  return ctx;
+    const logout = () => {
+        setUser(null);
+        // perform further logout actions...
+    };
+
+    return (
+        <AuthContext.Provider value={{ user, loginWithPhone, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("gb_user");
-    if (stored) setUser(JSON.parse(stored));
-  }, []);
-
-  const register = (email: string, password: string) => {
-    const users = JSON.parse(localStorage.getItem("gb_users") || "[]");
-    if (users.find((u: any) => u.email === email)) return false;
-    const newUser = { email, password, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
-    users.push(newUser);
-    localStorage.setItem("gb_users", JSON.stringify(users));
-    const { password: _, ...safeUser } = newUser;
-    localStorage.setItem("gb_user", JSON.stringify(safeUser));
-    setUser(safeUser);
-    return true;
-  };
-
-  const login = (email: string, password: string) => {
-    const users = JSON.parse(localStorage.getItem("gb_users") || "[]");
-    const found = users.find((u: any) => u.email === email && u.password === password);
-    if (!found) return false;
-    const { password: _, ...safeUser } = found;
-    localStorage.setItem("gb_user", JSON.stringify(safeUser));
-    setUser(safeUser);
-    return true;
-  };
-
-  const logout = () => {
-    localStorage.removeItem("gb_user");
-    setUser(null);
-  };
-
-  return <AuthContext.Provider value={{ user, login, register, logout }}>{children}</AuthContext.Provider>;
-};
+export const useAuth = () => useContext(AuthContext);
