@@ -13,11 +13,11 @@ import { Play, CheckCircle, Clock, Trophy, Gift, History, Users } from "lucide-r
 import { useToast } from "@/hooks/use-toast";
 
 const AD_LINKS = [
-  "https://www.google.com",
-  "https://www.youtube.com",
-  "https://www.wikipedia.org",
-  "https://www.github.com",
-  "https://www.reddit.com",
+  "https://omg10.com/4/10649080",
+  "https://omg10.com/4/10649080",
+  "https://omg10.com/4/10649080",
+  "https://omg10.com/4/10649080",
+  "https://omg10.com/4/10649080",
 ];
 
 const Dashboard = () => {
